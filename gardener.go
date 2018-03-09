@@ -1,13 +1,13 @@
-package gardener
+package main
 
 import (
 	"github.com/golang/glog"
 	informercorev1 "k8s.io/client-go/informers/core/v1"
 	"k8s.io/client-go/kubernetes"
 	listercorev1 "k8s.io/client-go/listers/core/v1"
-	"k8s.io/client-go/pkg/api"
 	"k8s.io/client-go/tools/cache"
 	"k8s.io/client-go/util/workqueue"
+	"k8s.io/client-go/pkg/api/v1"
 )
 
 type NaisJanitor struct {
@@ -26,38 +26,18 @@ func NewNaisJanitor(client *kubernetes.Clientset,
 
 	podInformer.Informer().AddEventHandler(
 		cache.ResourceEventHandlerFuncs{
-			AddFunc: func(pod interface{}) {
-				//podObj := pod.(*v14.Pod)
-				//glog.Info("pod added: ", podObj.Name)
-			},
 			UpdateFunc: func(oldPod, newPod interface{}) {
-				//oldPodObj := oldPod.(*v14.Pod)
-				newPodObj := newPod.(*api.Pod)
+				janitor.findPodsInCrashloopBackoff(newPod.(*v1.Pod))
 
-				//glog.Info("pod changed.old: ", oldPodObj.Name, oldPodObj.UID)
-				//glog.Info("pod changed.new: ", newPodObj.Name, newPodObj.UID)
-				janitor.findPodsInCrashloopBackoff(newPodObj)
-
-			},
-			DeleteFunc: func(pod interface{}) {
-				//podObj := pod.(*v14.Pod)
-				//glog.Info("pod deleted: ", podObj.Name)
 			},
 		},
 	)
 	return janitor
 }
 
-func (janitor *NaisJanitor) findPodsInCrashloopBackoff(pod *api.Pod) {
+func (janitor *NaisJanitor) findPodsInCrashloopBackoff(pod *v1.Pod) {
 	for _, containerStatus := range pod.Status.ContainerStatuses {
-		restartCount := containerStatus.RestartCount
-		//state := containerStatus.State
-		//lastState := containerStatus.LastTerminationState
-
-		glog.Info("name: ", pod.Name)
-		glog.Info("restartcount: ", restartCount)
-		//glog.Info("state: ", state)
-		//glog.Info("lastState: ", lastState)
+		glog.Infof("restartcount: %s: %d ", pod.Name, containerStatus.RestartCount)
 	}
 
 }

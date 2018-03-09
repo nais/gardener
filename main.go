@@ -1,4 +1,4 @@
-package gardener
+package main
 
 import (
 	"flag"
@@ -15,7 +15,7 @@ import (
 	"time"
 )
 
-const Port string = ":8081"
+const Port = ":8081"
 
 func main() {
 	fmt.Println("starting up...")
