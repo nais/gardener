@@ -7,10 +7,10 @@ TOKEN=${1}
 CHART="./helm/gardener/Chart.yaml"
 HELM_VALUES="./helm/gardener/values.yaml"
 
-OLD=$(cat ./version | cut -d'.' -f1)
+OLD=$(cat ./vrs | cut -d'.' -f1)
 NEW=$(expr $OLD + 1).0.0
 
-echo "$NEW" > version
+echo "$NEW" > vrs
 grep -v "version: " $CHART > temp && mv temp $CHART && rm -f temp && echo "version: $NEW" >> $CHART
 grep -v "version: " $HELM_VALUES > temp && mv temp $HELM_VALUES && rm -f temp && echo "version: $NEW" >> $HELM_VALUES
 
