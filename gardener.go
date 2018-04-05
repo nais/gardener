@@ -10,16 +10,16 @@ import (
 	"k8s.io/client-go/pkg/api/v1"
 )
 
-type NaisJanitor struct {
+type gardener struct {
 	podLister       listercorev1.PodLister
 	podListerSynced cache.InformerSynced
 	queue           workqueue.RateLimitingInterface
 }
 
-func NewNaisJanitor(client *kubernetes.Clientset,
-	podInformer informercorev1.PodInformer) *NaisJanitor {
+func NewNaisGardener(client *kubernetes.Clientset,
+	podInformer informercorev1.PodInformer) *gardener {
 
-	janitor := &NaisJanitor{
+	gardener := &gardener{
 		podLister:       podInformer.Lister(),
 		podListerSynced: podInformer.Informer().HasSynced,
 	}
@@ -27,22 +27,22 @@ func NewNaisJanitor(client *kubernetes.Clientset,
 	podInformer.Informer().AddEventHandler(
 		cache.ResourceEventHandlerFuncs{
 			UpdateFunc: func(oldPod, newPod interface{}) {
-				janitor.findPodsInCrashloopBackoff(newPod.(*v1.Pod))
+				gardener.findPodsInCrashloopBackoff(newPod.(*v1.Pod))
 
 			},
 		},
 	)
-	return janitor
+	return gardener
 }
 
-func (janitor *NaisJanitor) findPodsInCrashloopBackoff(pod *v1.Pod) {
+func (gardener *gardener) findPodsInCrashloopBackoff(pod *v1.Pod) {
 	for _, containerStatus := range pod.Status.ContainerStatuses {
 		glog.Infof("restartcount: %s: %d ", pod.Name, containerStatus.RestartCount)
 	}
 
 }
 
-func (janitor *NaisJanitor) Run(stop <-chan struct{}) {
+func (gardener *gardener) Run(stop <-chan struct{}) {
 	defer func() {
 		// make sure the work queue is shut down which will trigger workers to end
 		glog.Info("shutting down")
@@ -51,7 +51,7 @@ func (janitor *NaisJanitor) Run(stop <-chan struct{}) {
 	glog.Info("waiting for cache sync")
 	if !cache.WaitForCacheSync(
 		stop,
-		janitor.podListerSynced) {
+		gardener.podListerSynced) {
 		glog.Error("timed out waiting for cache sync")
 		return
 	}

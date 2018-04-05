@@ -1,0 +1,31 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: gardener
+spec:
+  selector:
+    matchLabels:
+      app: gardener
+  template:
+    metadata:
+      labels:
+        app: gardener
+      annotations:
+        prometheus.io/scrape: "true"
+        nais.io/logformat: glog
+    spec:
+      serviceAccount: gardener
+      containers:
+      - name: gardener
+        image: "{{ .Values.repository }}:{{ .Values.version }}"
+        resources:
+          requests:
+            memory: "{{ .Values.request.memory }}"
+            cpu: "{{ .Values.request.cpu }}"
+          limits:
+            memory: "{{ .Values.limit.memory }}"
+            cpu: "{{ .Values.limit.cpu }}"
+        livenessProbe:
+          httpGet:
+            path: /isalive
+            port: http
