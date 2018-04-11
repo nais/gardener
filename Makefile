@@ -1,7 +1,8 @@
 SHELL   := bash
 NAME    := navikt/gardener
 LATEST  := ${NAME}:latest
-GLIDE   := docker run --rm -v ${PWD}:/go/src/github.com/nais/gardener -w /go/src/github.com/nais/gardener navikt/glide glide
+DEP_IMG := navikt/dep:1.0.0
+DEP     := docker run --rm -v ${PWD}:/go/src/github.com/nais/naisd -w /go/src/github.com/nais/naisd ${DEP_IMG} dep
 GO_IMG  := golang:1.8
 GO      := docker run --rm -v ${PWD}:/go/src/github.com/nais/gardener -w /go/src/github.com/nais/gardener ${GO_IMG} go
 LDFLAGS := -X github.com/nais/gardener/version.Revision=$(shell git rev-parse --short HEAD) -X github.com/nais/gardener/version.Version=$(shell /bin/cat ./vrs)
@@ -12,7 +13,7 @@ tag:
 	git tag -a $(shell /bin/cat ./vrs) -m "auto-tag from Makefile [skip ci]" && git push --tags
 
 install:
-	${GLIDE} install --strip-vendor
+	${DEP} ensure
 
 test:
 	${GO} test .
