@@ -18,7 +18,7 @@ git add version $CHART $HELM_VALUES
 git commit -am "increased version number to $NEW [skip ci]"
 
 if [[ -n ${TOKEN} ]]; then
-    git push https://${TOKEN}@github.com/nais/naisd HEAD:master
+    git push https://${TOKEN}@github.com/nais/gardener HEAD:master
 else
     git push origin master
 fi
