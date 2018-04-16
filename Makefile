@@ -33,4 +33,4 @@ docker-build:
 	docker image build -t ${NAME}:$(shell /bin/cat ./vrs) -t gardener -t ${NAME} -t ${LATEST} -f Dockerfile .
 
 push-dockerhub:
-    docker image push ${NAME}:$(shell /bin/cat ./vrs)
+	docker image push ${NAME}:$(shell /bin/cat ./vrs)
