@@ -1,4 +1,4 @@
-repository: navikt/naisd
+repository: navikt/gardener
 minReplicas: 1
 maxReplicas: 1
 request:
