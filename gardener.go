@@ -28,7 +28,6 @@ func NewNaisGardener(client *kubernetes.Clientset,
 		cache.ResourceEventHandlerFuncs{
 			UpdateFunc: func(oldPod, newPod interface{}) {
 				gardener.findPodsInCrashloopBackoff(newPod.(*v1.Pod))
-
 			},
 		},
 	)
@@ -37,7 +36,9 @@ func NewNaisGardener(client *kubernetes.Clientset,
 
 func (gardener *gardener) findPodsInCrashloopBackoff(pod *v1.Pod) {
 	for _, containerStatus := range pod.Status.ContainerStatuses {
-		glog.Infof("restartcount: %s: %d ", pod.Name, containerStatus.RestartCount)
+		if containerStatus.RestartCount > 50 {
+			glog.Infof("restartcount: %s: %d ", pod.Name, containerStatus.RestartCount)
+		}
 	}
 
 }
