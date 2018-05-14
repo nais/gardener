@@ -2,12 +2,12 @@ package main
 
 import (
 	"github.com/golang/glog"
+	"k8s.io/api/core/v1"
 	informercorev1 "k8s.io/client-go/informers/core/v1"
 	"k8s.io/client-go/kubernetes"
 	listercorev1 "k8s.io/client-go/listers/core/v1"
 	"k8s.io/client-go/tools/cache"
 	"k8s.io/client-go/util/workqueue"
-	"k8s.io/api/core/v1"
 )
 
 type gardener struct {
@@ -27,7 +27,10 @@ func NewNaisGardener(client *kubernetes.Clientset,
 	podInformer.Informer().AddEventHandler(
 		cache.ResourceEventHandlerFuncs{
 			UpdateFunc: func(oldPod, newPod interface{}) {
-				gardener.findPodsInCrashloopBackoff(newPod.(*v1.Pod))
+				triggered, name := FindPodsInCrashloopBackoff(newPod.(*v1.Pod))
+				if triggered{
+					glog.Infof("pod: %s is ready for weeding", name)
+				}
 			},
 		},
 	)
@@ -40,7 +43,6 @@ func (gardener *gardener) findPodsInCrashloopBackoff(pod *v1.Pod) {
 			glog.Infof("restartcount: %s: %d ", pod.Name, containerStatus.RestartCount)
 		}
 	}
-
 }
 
 func (gardener *gardener) Run(stop <-chan struct{}) {
