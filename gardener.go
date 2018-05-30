@@ -37,16 +37,6 @@ func NewNaisGardener(client *kubernetes.Clientset,
 	return gardener
 }
 
-func (gardener *gardener) findPodsInCrashloopBackoff(pod *v1.Pod) {
-	for _, containerStatus := range pod.Status.ContainerStatuses {
-		if containerStatus.RestartCount > 50 {
-			glog.Infof("restartcount: %s: %d ", pod.Name, containerStatus.RestartCount)
-		}else {
-			glog.Infof("restartcount: %s: %d ", pod.Name, containerStatus.RestartCount)
-		}
-	}
-}
-
 func (gardener *gardener) Run(stop <-chan struct{}) {
 	defer func() {
 		// make sure the work queue is shut down which will trigger workers to end
