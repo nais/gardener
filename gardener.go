@@ -41,6 +41,8 @@ func (gardener *gardener) findPodsInCrashloopBackoff(pod *v1.Pod) {
 	for _, containerStatus := range pod.Status.ContainerStatuses {
 		if containerStatus.RestartCount > 50 {
 			glog.Infof("restartcount: %s: %d ", pod.Name, containerStatus.RestartCount)
+		}else {
+			glog.Infof("restartcount: %s: %d ", pod.Name, containerStatus.RestartCount)
 		}
 	}
 }
