@@ -29,7 +29,7 @@ func NewNaisGardener(client *kubernetes.Clientset,
 			UpdateFunc: func(oldPod, newPod interface{}) {
 				triggered, name := FindPodsInCrashloopBackoff(newPod.(*v1.Pod))
 				if triggered{
-					glog.Infof("pod: %s is ready for weeding", name)
+					glog.Infof("pod: %s is marked for weeding", name)
 				}
 			},
 		},
