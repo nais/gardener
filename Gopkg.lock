@@ -168,7 +168,6 @@
   version = "v2.2.1"
 
 [[projects]]
-  branch = "master"
   name = "k8s.io/api"
   packages = [
     "admissionregistration/v1alpha1",
@@ -200,9 +199,11 @@
     "storage/v1alpha1",
     "storage/v1beta1"
   ]
-  revision = "847e24b2c0e587a6a097d187ebd72e1ca24de001"
+  revision = "feb48db456a5912850dcccbd42a3535382ba76de"
+  version = "kubernetes-1.10.3"
 
 [[projects]]
+  branch = "release-1.10"
   name = "k8s.io/apimachinery"
   packages = [
     "pkg/api/errors",
@@ -244,13 +245,13 @@
     "pkg/watch",
     "third_party/forked/golang/reflect"
   ]
-  revision = "302974c03f7e50f16561ba237db776ab93594ef6"
-  version = "kubernetes-1.10.0"
+  revision = "31dade610c053669d8054bfd847da657251e8c1a"
 
 [[projects]]
   name = "k8s.io/client-go"
   packages = [
     "discovery",
+    "discovery/fake",
     "informers",
     "informers/admissionregistration",
     "informers/admissionregistration/v1alpha1",
@@ -292,35 +293,64 @@
     "informers/storage/v1alpha1",
     "informers/storage/v1beta1",
     "kubernetes",
+    "kubernetes/fake",
     "kubernetes/scheme",
     "kubernetes/typed/admissionregistration/v1alpha1",
+    "kubernetes/typed/admissionregistration/v1alpha1/fake",
     "kubernetes/typed/admissionregistration/v1beta1",
+    "kubernetes/typed/admissionregistration/v1beta1/fake",
     "kubernetes/typed/apps/v1",
+    "kubernetes/typed/apps/v1/fake",
     "kubernetes/typed/apps/v1beta1",
+    "kubernetes/typed/apps/v1beta1/fake",
     "kubernetes/typed/apps/v1beta2",
+    "kubernetes/typed/apps/v1beta2/fake",
     "kubernetes/typed/authentication/v1",
+    "kubernetes/typed/authentication/v1/fake",
     "kubernetes/typed/authentication/v1beta1",
+    "kubernetes/typed/authentication/v1beta1/fake",
     "kubernetes/typed/authorization/v1",
+    "kubernetes/typed/authorization/v1/fake",
     "kubernetes/typed/authorization/v1beta1",
+    "kubernetes/typed/authorization/v1beta1/fake",
     "kubernetes/typed/autoscaling/v1",
+    "kubernetes/typed/autoscaling/v1/fake",
     "kubernetes/typed/autoscaling/v2beta1",
+    "kubernetes/typed/autoscaling/v2beta1/fake",
     "kubernetes/typed/batch/v1",
+    "kubernetes/typed/batch/v1/fake",
     "kubernetes/typed/batch/v1beta1",
+    "kubernetes/typed/batch/v1beta1/fake",
     "kubernetes/typed/batch/v2alpha1",
+    "kubernetes/typed/batch/v2alpha1/fake",
     "kubernetes/typed/certificates/v1beta1",
+    "kubernetes/typed/certificates/v1beta1/fake",
     "kubernetes/typed/core/v1",
+    "kubernetes/typed/core/v1/fake",
     "kubernetes/typed/events/v1beta1",
+    "kubernetes/typed/events/v1beta1/fake",
     "kubernetes/typed/extensions/v1beta1",
+    "kubernetes/typed/extensions/v1beta1/fake",
     "kubernetes/typed/networking/v1",
+    "kubernetes/typed/networking/v1/fake",
     "kubernetes/typed/policy/v1beta1",
+    "kubernetes/typed/policy/v1beta1/fake",
     "kubernetes/typed/rbac/v1",
+    "kubernetes/typed/rbac/v1/fake",
     "kubernetes/typed/rbac/v1alpha1",
+    "kubernetes/typed/rbac/v1alpha1/fake",
     "kubernetes/typed/rbac/v1beta1",
+    "kubernetes/typed/rbac/v1beta1/fake",
     "kubernetes/typed/scheduling/v1alpha1",
+    "kubernetes/typed/scheduling/v1alpha1/fake",
     "kubernetes/typed/settings/v1alpha1",
+    "kubernetes/typed/settings/v1alpha1/fake",
     "kubernetes/typed/storage/v1",
+    "kubernetes/typed/storage/v1/fake",
     "kubernetes/typed/storage/v1alpha1",
+    "kubernetes/typed/storage/v1alpha1/fake",
     "kubernetes/typed/storage/v1beta1",
+    "kubernetes/typed/storage/v1beta1/fake",
     "listers/admissionregistration/v1alpha1",
     "listers/admissionregistration/v1beta1",
     "listers/apps/v1",
@@ -351,6 +381,7 @@
     "plugin/pkg/client/auth/exec",
     "rest",
     "rest/watch",
+    "testing",
     "tools/auth",
     "tools/cache",
     "tools/clientcmd",
@@ -375,6 +406,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "4b72366244b083147ab23ba5d18db5e667c72fbd92c665b9234499a70569b403"
+  inputs-digest = "d790d3a4c56f54d0df5167028a558c1bb1580ceab5a6a665d87a4b76652766e7"
   solver-name = "gps-cdcl"
   solver-version = 1
