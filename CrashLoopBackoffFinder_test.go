@@ -11,12 +11,12 @@ func TestWillTriggerOn50Restarts(t *testing.T) {
 		Status: v1.PodStatus{ContainerStatuses: []v1.ContainerStatus{{RestartCount: 51}},
 		},
 	}
-	pod.Labels = make(map[string]string)
+	pod.Annotations = make(map[string]string)
 	triggered, _ := FindPodsInCrashloopBackoff(pod)
 	if triggered == false {
 		t.Fail()
 	}
-	if pod.GetLabels()["nais.io/status"] == "" || pod.GetLabels()["nais.io/status"] != "bad" {
+	if pod.GetAnnotations()["nais.io/gardener/status"] == "" || pod.GetAnnotations()["nais.io/gardener/status"] != "bad" {
 		t.Fail()
 	}
 }
@@ -31,7 +31,7 @@ func TestWillNotTriggerOnLessThan50Restarts(t *testing.T) {
 	if triggered == true {
 		t.Fail()
 	}
-	if pod.GetLabels()["nais.io/status"] != "" || pod.GetLabels()["nais.io/status"] == "bad" {
+	if pod.GetAnnotations()["nais.io/gardener/status"] != "" || pod.GetAnnotations()["nais.io/gardener/status"] == "bad" {
 		t.Fail()
 	}
 }

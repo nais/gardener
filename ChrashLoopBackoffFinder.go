@@ -7,8 +7,8 @@ import (
 func FindPodsInCrashloopBackoff(pod *v1.Pod) (bool, string) {
 	for _, containerStatus := range pod.Status.ContainerStatuses {
 		if containerStatus.RestartCount > 50 {
-			labels := pod.GetLabels()
-			labels["nais.io/status"]="bad"
+			annotations := pod.GetAnnotations()
+			annotations["nais.io/gardener/status"]="bad"
 			return true, pod.Name
 		}
 	}
