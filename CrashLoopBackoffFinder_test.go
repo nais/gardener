@@ -26,7 +26,7 @@ func TestWillNotTriggerOnLessThan50Restarts(t *testing.T) {
 		Status: v1.PodStatus{ContainerStatuses: []v1.ContainerStatus{{RestartCount: 49}},
 		},
 	}
-	pod.Labels = make(map[string]string)
+	pod.Annotations = make(map[string]string)
 	triggered, _ := FindPodsInCrashloopBackoff(pod)
 	if triggered == true {
 		t.Fail()
