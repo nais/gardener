@@ -1,22 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
- name: stopping-deployment
- labels:
- purpose: restarting
+  name: stopping-deployment
+  labels:
+    purpose: restarting
 spec:
- replicas: 1
- selector:
-   matchLabels:
-     app: stopping-pod
- template:
-   metadata:
-     labels:
-       app: stopping-pod
-   spec:
-     containers:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stopping-pod
+  template:
+    metadata:
+      labels:
+        app: stopping-pod
+    spec:
+      containers:
       - name: exit-1
         image: alpine
         command: ["exit"]
         args: ["1"]
-      restartPolicy: OnFailure

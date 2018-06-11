@@ -34,10 +34,11 @@ func main() {
 
 	sharedInformers := informers.NewSharedInformerFactory(clientSet, 10*time.Minute)
 
-	gardener := NewNaisGardener(clientSet, sharedInformers.Core().V1().Pods())
+	gardener := NewNaisGardener(clientSet, sharedInformers.Core().V1().Pods(), sharedInformers.Apps().V1().Deployments())
 
 	sharedInformers.Start(stop)
 	gardener.Run(stop)
+
 
 	<-sigs
 	fmt.Println("shutting  down...")
