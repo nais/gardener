@@ -24,7 +24,7 @@ func TestWillTriggerOn50Restarts(t *testing.T) {
 
 	depl, _ := k8sclient.AppsV1().Deployments(namespace).Get("deployment", v12.GetOptions{})
 
-	if depl.GetAnnotations()["nais.io/gardener/status"] == "" || depl.GetAnnotations()["nais.io/gardener/status"] != "bad" {
+	if depl.GetAnnotations()["nais.io/gardener.status"] == "" || depl.GetAnnotations()["nais.io/gardener.status"] != "bad" {
 		t.Fail()
 	}
 }
@@ -41,7 +41,7 @@ func TestWillNotTriggerOnLessThan50Restarts(t *testing.T) {
 	}
 	depl, _ := k8sclient.AppsV1().Deployments(namespace).Get("deployment", v12.GetOptions{})
 
-	if depl.GetAnnotations()["nais.io/gardener/status"] != "" || depl.GetAnnotations()["nais.io/gardener/status"] == "bad" {
+	if depl.GetAnnotations()["nais.io/gardener.status"] != "" || depl.GetAnnotations()["nais.io/gardener.status"] == "bad" {
 		t.Fail()
 	}
 }
