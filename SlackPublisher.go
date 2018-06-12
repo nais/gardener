@@ -1,12 +1,12 @@
 package main
 
 import (
-	"fmt"
 	"bytes"
+	"encoding/json"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
-	"encoding/json"
 )
 
 type Message struct {

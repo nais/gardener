@@ -1,11 +1,9 @@
 package main
 
 import (
-"testing"
-
+	"testing"
 )
 
 func TestWillSendSlackMessage(t *testing.T) {
 	//NotifyTeamsOfWeed()
 }
-

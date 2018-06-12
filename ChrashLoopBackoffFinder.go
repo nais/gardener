@@ -2,42 +2,38 @@ package main
 
 import (
 	"k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
-	v12 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/golang/glog"
+	"fmt"
 )
 
-func FindPodsInCrashloopBackoff(client kubernetes.Interface, pod *v1.Pod) (bool, string) {
+func FindPodsInCrashloopBackoff(client kubernetes.Interface, pod *v1.Pod) (bool, error) {
 
 	for _, containerStatus := range pod.Status.ContainerStatuses {
 		if containerStatus.RestartCount > 50 {
 			for _, set := range pod.OwnerReferences {
-				replicaSet, err := client.AppsV1().ReplicaSets(pod.Namespace).Get(set.Name, v12.GetOptions{})
+				replicaSet, err := client.AppsV1().ReplicaSets(pod.Namespace).Get(set.Name, metav1.GetOptions{})
 				if err != nil {
-					glog.Error("cannot fetch replicaset ", set, err)
-					return false, ""
-				}
-				println("set: ", replicaSet.Name)
 
+					return false, fmt.Errorf("cannot fetch replicaset ", set, err)
+				}
 				for _, depl := range replicaSet.OwnerReferences {
-					deployment, err := client.AppsV1().Deployments(pod.Namespace).Get(depl.Name, v12.GetOptions{})
+					deployment, err := client.AppsV1().Deployments(pod.Namespace).Get(depl.Name, metav1.GetOptions{})
 					if err != nil {
-						glog.Error("cannot fetch deployment ", deployment, err)
-						return false, ""
+						return false, fmt.Errorf("cannot fetch  deployment ", deployment, err)
 					}
-					println("deployment: ", deployment.Name)
 					annotations := deployment.GetAnnotations()
 					annotations["nais.io/gardener.status"] = "bad"
+
 					upDeployment, err := client.AppsV1().Deployments(pod.Namespace).Update(deployment)
 					if err != nil {
-						glog.Error("cannot update deployment ", upDeployment, err)
-						return false, ""
+						return false, fmt.Errorf("cannot update deployment ", upDeployment, err)
 					}
-					return true, upDeployment.Name
+					return true, nil
 				}
 			}
 		}
 	}
-	return false, ""
+	return false, nil
 }

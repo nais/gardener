@@ -39,7 +39,6 @@ func main() {
 	sharedInformers.Start(stop)
 	gardener.Run(stop)
 
-
 	<-sigs
 	fmt.Println("shutting  down...")
 	close(stop)

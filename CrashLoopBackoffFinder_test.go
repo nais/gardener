@@ -3,10 +3,10 @@ package main
 import (
 	"testing"
 
-	"k8s.io/api/core/v1"
-	"k8s.io/client-go/kubernetes/fake"
-	v12 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	v13 "k8s.io/api/apps/v1"
+	"k8s.io/api/core/v1"
+	v12 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/client-go/kubernetes/fake"
 )
 
 func TestWillTriggerOn50Restarts(t *testing.T) {
@@ -46,7 +46,7 @@ func TestWillNotTriggerOnLessThan50Restarts(t *testing.T) {
 	}
 }
 
-func createPod(k8sclient *fake.Clientset, namespace string, podName string, restarts int32) (*v1.Pod) {
+func createPod(k8sclient *fake.Clientset, namespace string, podName string, restarts int32) *v1.Pod {
 
 	deployment := &v13.Deployment{}
 	deployment.Name = "deployment"
@@ -54,15 +54,13 @@ func createPod(k8sclient *fake.Clientset, namespace string, podName string, rest
 	deployment.UID = "1234"
 	deployment.Annotations = make(map[string]string)
 
-
 	replicaSet := &v13.ReplicaSet{}
 	replicaSet.Name = "replicaSet"
 	replicaSet.Namespace = namespace
 	replicaSet.OwnerReferences = []v12.OwnerReference{{UID: deployment.GetUID()}}
 
 	pod := &v1.Pod{
-		Status: v1.PodStatus{ContainerStatuses: []v1.ContainerStatus{{RestartCount: restarts}},
-		},
+		Status: v1.PodStatus{ContainerStatuses: []v1.ContainerStatus{{RestartCount: restarts}}},
 	}
 	pod.OwnerReferences = []v12.OwnerReference{{UID: replicaSet.GetUID()}}
 

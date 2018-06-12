@@ -38,10 +38,12 @@ func NewNaisGardener(client *kubernetes.Clientset,
 	podInformer.Informer().AddEventHandler(
 		cache.ResourceEventHandlerFuncs{
 			UpdateFunc: func(oldPod, newPod interface{}) {
-				triggered, name := FindPodsInCrashloopBackoff(client, newPod.(*v1.Pod))
-
+				triggered, err := FindPodsInCrashloopBackoff(client, newPod.(*v1.Pod))
+				if err != nil {
+					glog.Error("Error while looking for chrashloopbackoff on pod", newPod, err)
+				}
 				if triggered {
-					glog.Infof("pod: %s is marked for weeding", name)
+					glog.Infof("pod: %s is marked for weeding", newPod)
 				}
 			},
 		},
