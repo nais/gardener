@@ -15,20 +15,19 @@ func FindPodsInCrashloopBackoff(client kubernetes.Interface, pod *v1.Pod) (bool,
 			for _, set := range pod.OwnerReferences {
 				replicaSet, err := client.AppsV1().ReplicaSets(pod.Namespace).Get(set.Name, metav1.GetOptions{})
 				if err != nil {
-
-					return false, fmt.Errorf("cannot fetch replicaset ", set, err)
+					return false, fmt.Errorf("cannot fetch replicaset %s, %s", replicaSet, err)
 				}
 				for _, depl := range replicaSet.OwnerReferences {
 					deployment, err := client.AppsV1().Deployments(pod.Namespace).Get(depl.Name, metav1.GetOptions{})
 					if err != nil {
-						return false, fmt.Errorf("cannot fetch  deployment ", deployment, err)
+						return false, fmt.Errorf("cannot fetch  deployment %s, %s", deployment, err)
 					}
 					annotations := deployment.GetAnnotations()
 					annotations["nais.io/gardener.status"] = "bad"
 
 					upDeployment, err := client.AppsV1().Deployments(pod.Namespace).Update(deployment)
 					if err != nil {
-						return false, fmt.Errorf("cannot update deployment ", upDeployment, err)
+						return false, fmt.Errorf("cannot update deployment %s, %s", upDeployment, err)
 					}
 					return true, nil
 				}
