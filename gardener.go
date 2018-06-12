@@ -50,7 +50,10 @@ func NewNaisGardener(client *kubernetes.Clientset,
 	)
 	deploymentInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
 		UpdateFunc: func(oldDeployment, newDeployment interface{}) {
-			NotifyTeamsOfWeed(newDeployment.(*v12.Deployment))
+			err := NotifyTeamsOfWeed(newDeployment.(*v12.Deployment))
+			if err != nil {
+				glog.Error(err)
+			}
 		},
 	})
 	return gardener
