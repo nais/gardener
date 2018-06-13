@@ -23,7 +23,7 @@ func FindPodsInCrashloopBackoff(client kubernetes.Interface, pod *v1.Pod) (bool,
 						return false, fmt.Errorf("cannot fetch  deployment %s, %s", deployment, err)
 					}
 					annotations := deployment.GetAnnotations()
-					annotations["nais.io/gardener.status"] = "bad"
+					annotations[annotation_status] = "bad"
 
 					upDeployment, err := client.AppsV1().Deployments(pod.Namespace).Update(deployment)
 					if err != nil {

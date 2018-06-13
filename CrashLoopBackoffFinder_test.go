@@ -9,12 +9,15 @@ import (
 	"k8s.io/client-go/kubernetes/fake"
 )
 
+const namespace = "ns"
+const podname = "podname"
+const deploymentname = "deployment"
+const rsname = "replicaSet"
+
 func TestWillTriggerOn50Restarts(t *testing.T) {
 	k8sclient := fake.NewSimpleClientset()
 
-	namespace := "ns"
-	podname := "name"
-	pod := createPod(k8sclient, namespace, podname, 51)
+	pod := createResources(k8sclient, 51)
 
 	triggered, _ := FindPodsInCrashloopBackoff(k8sclient, pod)
 
@@ -24,39 +27,37 @@ func TestWillTriggerOn50Restarts(t *testing.T) {
 
 	depl, _ := k8sclient.AppsV1().Deployments(namespace).Get("deployment", v12.GetOptions{})
 
-	if depl.GetAnnotations()["nais.io/gardener.status"] == "" || depl.GetAnnotations()["nais.io/gardener.status"] != "bad" {
+	if depl.GetAnnotations()[annotation_status] == "" || depl.GetAnnotations()[annotation_status] != "bad" {
 		t.Fail()
 	}
 }
 
 func TestWillNotTriggerOnLessThan50Restarts(t *testing.T) {
 	k8sclient := fake.NewSimpleClientset()
-
-	namespace := "ns"
-	podname := "name"
-	pod := createPod(k8sclient, namespace, podname, 49)
+	pod := createResources(k8sclient, 49)
 	triggered, _ := FindPodsInCrashloopBackoff(k8sclient, pod)
 	if triggered == true {
 		t.Fail()
 	}
 	depl, _ := k8sclient.AppsV1().Deployments(namespace).Get("deployment", v12.GetOptions{})
 
-	if depl.GetAnnotations()["nais.io/gardener.status"] != "" || depl.GetAnnotations()["nais.io/gardener.status"] == "bad" {
+	if depl.GetAnnotations()[annotation_status] != "" || depl.GetAnnotations()[annotation_status] == "bad" {
 		t.Fail()
 	}
 }
 
-func createPod(k8sclient *fake.Clientset, namespace string, podName string, restarts int32) *v1.Pod {
+func createResources(k8sclient *fake.Clientset, restarts int32) *v1.Pod {
 
 	deployment := &v13.Deployment{}
-	deployment.Name = "deployment"
+	deployment.Name = deploymentname
 	deployment.Namespace = namespace
 	deployment.UID = "1234"
 	deployment.Annotations = make(map[string]string)
 
 	replicaSet := &v13.ReplicaSet{}
-	replicaSet.Name = "replicaSet"
+	replicaSet.Name = rsname
 	replicaSet.Namespace = namespace
+	replicaSet.UID = "12345"
 	replicaSet.OwnerReferences = []v12.OwnerReference{{UID: deployment.GetUID()}}
 
 	pod := &v1.Pod{
@@ -64,7 +65,7 @@ func createPod(k8sclient *fake.Clientset, namespace string, podName string, rest
 	}
 	pod.OwnerReferences = []v12.OwnerReference{{UID: replicaSet.GetUID()}}
 
-	pod.Name = podName
+	pod.Name = podname
 	pod.Namespace = namespace
 	pod.Annotations = make(map[string]string)
 

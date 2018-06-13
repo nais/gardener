@@ -7,7 +7,6 @@ import (
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 
-	"fmt"
 	"k8s.io/client-go/informers"
 	"os"
 	"os/signal"
@@ -18,7 +17,7 @@ import (
 const Port = ":8081"
 
 func main() {
-	fmt.Println("starting up...")
+	glog.Info("starting up...")
 
 	sigs := make(chan os.Signal, 1) // Create channel to receive OS signals
 	stop := make(chan struct{})
@@ -40,7 +39,7 @@ func main() {
 	gardener.Run(stop)
 
 	<-sigs
-	fmt.Println("shutting  down...")
+	glog.Info("shutting  down...")
 	close(stop)
 }
 
