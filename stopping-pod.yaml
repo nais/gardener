@@ -4,6 +4,7 @@ metadata:
   name: stopping-deployment
   labels:
     purpose: restarting
+    app: stopping-deployment
 spec:
   replicas: 1
   selector:
