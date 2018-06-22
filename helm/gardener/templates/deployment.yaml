@@ -30,6 +30,8 @@ spec:
             path: /isalive
             port: http
         env:
+          - name: clustername
+            value: "{{ .Values.clusterName }}"
           - name: https_proxy
             value: "{{ .Values.httpsProxy }}"
           - name: http_proxy

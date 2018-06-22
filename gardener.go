@@ -24,18 +24,21 @@ type gardener struct {
 	deploymentLister       listerappsv1.DeploymentLister
 	deploymentListerSynced cache.InformerSynced
 
-	queue workqueue.RateLimitingInterface
+	queue       workqueue.RateLimitingInterface
+	clustername string
 }
 
 func NewNaisGardener(client *kubernetes.Clientset,
 	podInformer informercorev1.PodInformer,
-	deploymentInformer informerappsv1.DeploymentInformer) *gardener {
+	deploymentInformer informerappsv1.DeploymentInformer,
+	clusterName string) *gardener {
 
 	gardener := &gardener{
 		podLister:              podInformer.Lister(),
 		podListerSynced:        podInformer.Informer().HasSynced,
 		deploymentLister:       deploymentInformer.Lister(),
 		deploymentListerSynced: deploymentInformer.Informer().HasSynced,
+		clustername:            clusterName,
 	}
 
 	podInformer.Informer().AddEventHandler(
@@ -53,7 +56,7 @@ func NewNaisGardener(client *kubernetes.Clientset,
 	)
 	deploymentInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
 		UpdateFunc: func(oldDeployment, newDeployment interface{}) {
-			err := NotifyTeamsOfWeed(client, newDeployment.(*v12.Deployment))
+			err := NotifyTeamsOfWeed(client, clusterName, newDeployment.(*v12.Deployment))
 			if err != nil {
 				glog.Errorf("Error when weeding %s. %s", newDeployment.(*v12.Deployment).Name, err)
 			}
