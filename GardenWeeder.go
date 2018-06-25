@@ -11,7 +11,7 @@ const slackUrl = "https://hooks.slack.com/services/T5LNAMWNA/BB51NQB5H/1wzW89NsI
 
 var httpClient = &http.Client{}
 
-func NotifyTeamsOfWeed(client kubernetes.Interface, clustername string, deployment *v1.Deployment) error {
+func NotifyTeamsOfWeed(send func(string) error, client kubernetes.Interface, clustername string, deployment *v1.Deployment) error {
 
 	annotations := deployment.GetAnnotations()
 
@@ -19,9 +19,9 @@ func NotifyTeamsOfWeed(client kubernetes.Interface, clustername string, deployme
 	notify := annotations[annotation_notify]
 
 	if status == "bad" && notify == "" {
-		slack := Client{slackUrl, httpClient}
+		message := "The application " + deployment.Namespace + "." + deployment.Name + " has restarted more the 50 times in the cluster: " + clustername + ". The deployment will be deleted"
 
-		err := slack.Simple("The application " + deployment.Namespace + "." + deployment.Name + " has restarted more the 50 times in the cluster: " + clustername + ". The deployment will be deleted")
+		err := send(message)
 		if err != nil {
 			return fmt.Errorf("Error when posting to slack %s ", err)
 		}
@@ -33,4 +33,9 @@ func NotifyTeamsOfWeed(client kubernetes.Interface, clustername string, deployme
 
 	}
 	return nil
+}
+
+func SendMessage(message string) error {
+	slack := Client{slackUrl, httpClient}
+	return slack.Simple(message)
 }
