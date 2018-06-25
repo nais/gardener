@@ -27,7 +27,7 @@ func TestWillTriggerOn50Restarts(t *testing.T) {
 
 	depl, _ := k8sclient.AppsV1().Deployments(namespace).Get("deployment", v12.GetOptions{})
 
-	if depl.GetAnnotations()[annotation_status] == "" || depl.GetAnnotations()[annotation_status] != "bad" {
+	if depl.GetAnnotations()[annotationStatus] == "" || depl.GetAnnotations()[annotationStatus] != "bad" {
 		t.Fail()
 	}
 }
@@ -41,7 +41,7 @@ func TestWillNotTriggerOnLessThan50Restarts(t *testing.T) {
 	}
 	depl, _ := k8sclient.AppsV1().Deployments(namespace).Get("deployment", v12.GetOptions{})
 
-	if depl.GetAnnotations()[annotation_status] != "" || depl.GetAnnotations()[annotation_status] == "bad" {
+	if depl.GetAnnotations()[annotationStatus] != "" || depl.GetAnnotations()[annotationStatus] == "bad" {
 		t.Fail()
 	}
 }

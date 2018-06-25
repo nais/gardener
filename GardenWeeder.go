@@ -15,8 +15,8 @@ func NotifyTeamsOfWeed(send func(string) error, client kubernetes.Interface, clu
 
 	annotations := deployment.GetAnnotations()
 
-	status := annotations[annotation_status]
-	notify := annotations[annotation_notify]
+	status := annotations[annotationStatus]
+	notify := annotations[annotationNotify]
 
 	if status == "bad" && notify == "" {
 		message := "The application " + deployment.Namespace + "." + deployment.Name + " has restarted more the 50 times in the cluster: " + clustername + ". The deployment will be deleted"
@@ -25,10 +25,10 @@ func NotifyTeamsOfWeed(send func(string) error, client kubernetes.Interface, clu
 		if err != nil {
 			return fmt.Errorf("Error when posting to slack %s ", err)
 		}
-		annotations[annotation_notify] = "done"
+		annotations[annotationNotify] = "done"
 		deployment, err = client.AppsV1().Deployments(deployment.Namespace).Update(deployment)
 		if err != nil {
-			return fmt.Errorf("Error while updating deployment %s ", deployment)
+			return fmt.Errorf("Error while updating deployment %s %s", deployment.Name, err)
 		}
 
 	}

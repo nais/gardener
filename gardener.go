@@ -14,8 +14,8 @@ import (
 	v12 "k8s.io/api/apps/v1"
 )
 
-const annotation_status = "nais.io/gardener.status"
-const annotation_notify = "nais.io/gardener.notify"
+const annotationStatus = "nais.io/gardener.status"
+const annotationNotify = "nais.io/gardener.notify"
 
 type gardener struct {
 	podLister       listercorev1.PodLister
@@ -46,7 +46,7 @@ func NewNaisGardener(client *kubernetes.Clientset,
 			UpdateFunc: func(oldPod, newPod interface{}) {
 				triggered, err := FindPodsInCrashloopBackoff(client, newPod.(*v1.Pod))
 				if err != nil {
-					glog.Error("Error while looking for chrashloopbackoff on pod", newPod, err)
+					glog.Errorf("Error while looking for chrashloopbackoff on pod %s %s", newPod.(*v1.Pod).Name, err)
 				}
 				if triggered {
 					glog.Infof("pod: %s is marked for weeding", newPod.(*v1.Pod).Name)

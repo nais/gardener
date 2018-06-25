@@ -24,7 +24,7 @@ func TestAnnotationsIsNotDoneWhenStatusIsNotBad(t *testing.T) {
 	}
 
 	depl, _ := k8sclient.AppsV1().Deployments(namespace).Get("deployment", v12.GetOptions{})
-	if depl.GetAnnotations()[annotation_notify] == "done" {
+	if depl.GetAnnotations()[annotationNotify] == "done" {
 		t.Fail()
 	}
 }
@@ -37,7 +37,7 @@ func TestAnnotationsIsDoneWhenStatusIsBad(t *testing.T) {
 	deployment.Namespace = namespace
 	deployment.UID = "1234"
 	deployment.Annotations = make(map[string]string)
-	deployment.Annotations[annotation_status] = "bad"
+	deployment.Annotations[annotationStatus] = "bad"
 	k8sclient.AppsV1().Deployments(namespace).Create(deployment)
 
 	stub := func(string) error { return nil }
@@ -46,7 +46,7 @@ func TestAnnotationsIsDoneWhenStatusIsBad(t *testing.T) {
 		t.Fail()
 	}
 	depl, _ := k8sclient.AppsV1().Deployments(namespace).Get("deployment", v12.GetOptions{})
-	if depl.GetAnnotations()[annotation_notify] != "done" {
+	if depl.GetAnnotations()[annotationNotify] != "done" {
 		t.Fail()
 	}
 }
