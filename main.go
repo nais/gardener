@@ -25,7 +25,7 @@ func main() {
 	signal.Notify(sigs, os.Interrupt, syscall.SIGTERM, syscall.SIGINT) // Register the sigs channel to receieve SIGTERM
 
 	kubeconfig := flag.String("kubeconfig", "", "Path to a kubeconfig file")
-	clusterName := flag.String("clustername", "kubernetes", "Name of the kubernetes cluster")
+	clusterName := flag.String("clusterName", "kubernetes", "Name of the kubernetes cluster")
 	flag.Parse()
 
 	glog.Infof("running on port %s", Port)
