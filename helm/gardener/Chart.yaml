@@ -1,4 +1,4 @@
 apiVersion: v1
 description: NAIS gardener
 name: gardener
-version: 38.0.0
+version: 39.0.0
