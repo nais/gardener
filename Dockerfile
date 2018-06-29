@@ -7,4 +7,4 @@ WORKDIR /app
 
 COPY gardener .
 
-CMD /app/gardener  --logtostderr=true
+CMD /app/gardener  --logtostderr=true --clustername=$clustername
