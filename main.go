@@ -28,7 +28,7 @@ func main() {
 	clusterName := flag.String("clusterName", "kubernetes", "Name of the kubernetes cluster")
 	flag.Parse()
 
-	glog.Infof("running on port %s in cluster %s", Port , clusterName	)
+	glog.Infof("running on port %s in cluster %s", Port , *clusterName	)
 	clientSet := newClientSet(*kubeconfig)
 
 	sharedInformers := informers.NewSharedInformerFactory(clientSet, 10*time.Minute)
