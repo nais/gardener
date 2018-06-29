@@ -31,7 +31,7 @@ spec:
             port: http
         env:
           - name: clustername
-            value: "{{ .Values.clusterName }}"
+            value: "{{ .Values.clustername }}"
           - name: https_proxy
             value: "{{ .Values.httpsProxy }}"
           - name: http_proxy
