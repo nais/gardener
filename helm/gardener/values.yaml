@@ -1,6 +1,7 @@
 repository: navikt/gardener
 minReplicas: 1
 maxReplicas: 1
+clusterName: minikube
 request:
   memory: 64Mi
   cpu: 250m
