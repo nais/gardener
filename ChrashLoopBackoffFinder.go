@@ -15,19 +15,19 @@ func FindPodsInCrashloopBackoff(client kubernetes.Interface, pod *v1.Pod) (bool,
 			for _, set := range pod.OwnerReferences {
 				replicaSet, err := client.AppsV1().ReplicaSets(pod.Namespace).Get(set.Name, metav1.GetOptions{})
 				if err != nil {
-					return false, fmt.Errorf("cannot fetch replicaset %s, %s", replicaSet, err)
+					return false, fmt.Errorf("cannot fetch replicaset %s.%s: %s", pod.Namespace, set.Name, err)
 				}
 				for _, depl := range replicaSet.OwnerReferences {
 					deployment, err := client.AppsV1().Deployments(pod.Namespace).Get(depl.Name, metav1.GetOptions{})
 					if err != nil {
-						return false, fmt.Errorf("cannot fetch  deployment %s, %s", deployment, err)
+						return false, fmt.Errorf("cannot fetch  deployment %s.%s: %s", pod.Namespace, depl.Name, err)
 					}
 					annotations := deployment.GetAnnotations()
 					annotations[annotationStatus] = "bad"
 
-					upDeployment, err := client.AppsV1().Deployments(pod.Namespace).Update(deployment)
-					if err != nil {
-						return false, fmt.Errorf("cannot update deployment %s, %s", upDeployment, err)
+					_, err2 := client.AppsV1().Deployments(pod.Namespace).Update(deployment)
+					if err2 != nil {
+						return false, fmt.Errorf("cannot update deployment %s.%s: %s", pod.Namespace, deployment.Name, err2)
 					}
 					return true, nil
 				}
