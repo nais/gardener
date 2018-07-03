@@ -3,15 +3,15 @@ package main
 import (
 	"github.com/golang/glog"
 	"k8s.io/api/core/v1"
-	informercorev1 "k8s.io/client-go/informers/core/v1"
 	informerappsv1 "k8s.io/client-go/informers/apps/v1"
+	informercorev1 "k8s.io/client-go/informers/core/v1"
 
+	v12 "k8s.io/api/apps/v1"
 	"k8s.io/client-go/kubernetes"
-	listercorev1 "k8s.io/client-go/listers/core/v1"
 	listerappsv1 "k8s.io/client-go/listers/apps/v1"
+	listercorev1 "k8s.io/client-go/listers/core/v1"
 	"k8s.io/client-go/tools/cache"
 	"k8s.io/client-go/util/workqueue"
-	v12 "k8s.io/api/apps/v1"
 )
 
 const annotationStatus = "nais.io/gardener.status"
@@ -44,22 +44,13 @@ func NewNaisGardener(client *kubernetes.Clientset,
 	podInformer.Informer().AddEventHandler(
 		cache.ResourceEventHandlerFuncs{
 			UpdateFunc: func(oldPod, newPod interface{}) {
-				triggered, err := FindPodsInCrashloopBackoff(client, newPod.(*v1.Pod))
-				if err != nil {
-					glog.Errorf("Error while looking for chrashloopbackoff on pod %s %s", newPod.(*v1.Pod).Name, err)
-				}
-				if triggered {
-					glog.Infof("pod: %s is marked for weeding", newPod.(*v1.Pod).Name)
-				}
+				FindPodsInCrashloopBackoff(client, newPod.(*v1.Pod))
 			},
 		},
 	)
 	deploymentInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
 		UpdateFunc: func(oldDeployment, newDeployment interface{}) {
-			err := NotifyTeamsOfWeed(SendMessage, client, clusterName, newDeployment.(*v12.Deployment))
-			if err != nil {
-				glog.Errorf("Error when weeding %s. %s", newDeployment.(*v12.Deployment).Name, err)
-			}
+			NotifyTeamsOfWeed(SendMessage, client, clusterName, newDeployment.(*v12.Deployment))
 		},
 	})
 	return gardener

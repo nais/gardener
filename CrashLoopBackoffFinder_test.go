@@ -19,11 +19,7 @@ func TestWillTriggerOn50Restarts(t *testing.T) {
 
 	pod := createResources(k8sclient, 51)
 
-	triggered, _ := FindPodsInCrashloopBackoff(k8sclient, pod)
-
-	if triggered == false {
-		t.Fail()
-	}
+	FindPodsInCrashloopBackoff(k8sclient, pod)
 
 	depl, _ := k8sclient.AppsV1().Deployments(namespace).Get("deployment", v12.GetOptions{})
 
@@ -35,10 +31,7 @@ func TestWillTriggerOn50Restarts(t *testing.T) {
 func TestWillNotTriggerOnLessThan50Restarts(t *testing.T) {
 	k8sclient := fake.NewSimpleClientset()
 	pod := createResources(k8sclient, 49)
-	triggered, _ := FindPodsInCrashloopBackoff(k8sclient, pod)
-	if triggered == true {
-		t.Fail()
-	}
+	FindPodsInCrashloopBackoff(k8sclient, pod)
 	depl, _ := k8sclient.AppsV1().Deployments(namespace).Get("deployment", v12.GetOptions{})
 
 	if depl.GetAnnotations()[annotationStatus] != "" || depl.GetAnnotations()[annotationStatus] == "bad" {

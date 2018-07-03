@@ -17,11 +17,7 @@ func TestAnnotationsIsNotDoneWhenStatusIsNotBad(t *testing.T) {
 	deployment.Annotations = make(map[string]string)
 	k8sclient.AppsV1().Deployments(namespace).Create(deployment)
 
-	stub := func(string) error { return nil }
-	err := NotifyTeamsOfWeed(stub, k8sclient, "clustername", deployment)
-	if err != nil {
-		t.Fail()
-	}
+	NotifyTeamsOfWeed(func(string, string) error { return nil }, k8sclient, "clustername", deployment)
 
 	depl, _ := k8sclient.AppsV1().Deployments(namespace).Get("deployment", v12.GetOptions{})
 	if depl.GetAnnotations()[annotationNotify] == "done" {
@@ -40,11 +36,8 @@ func TestAnnotationsIsDoneWhenStatusIsBad(t *testing.T) {
 	deployment.Annotations[annotationStatus] = "bad"
 	k8sclient.AppsV1().Deployments(namespace).Create(deployment)
 
-	stub := func(string) error { return nil }
-	err := NotifyTeamsOfWeed(stub, k8sclient, "clustername", deployment)
-	if err != nil {
-		t.Fail()
-	}
+	NotifyTeamsOfWeed(func(string, string) error { return nil }, k8sclient, "clustername", deployment)
+
 	depl, _ := k8sclient.AppsV1().Deployments(namespace).Get("deployment", v12.GetOptions{})
 	if depl.GetAnnotations()[annotationNotify] != "done" {
 		t.Fail()

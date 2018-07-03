@@ -55,6 +55,10 @@ type Poster interface {
 	Post(url, contentType string, body io.Reader) (*http.Response, error)
 }
 
+func (c *Client) SimpleToChannel(msg string, channel string) error {
+	return c.Send(&Message{Text: msg, Channel:channel})
+}
+
 // Simple text message.
 func (c *Client) Simple(msg string) error {
 	return c.Send(&Message{Text: msg})
