@@ -1,10 +1,10 @@
 package main
 
 import (
-	"k8s.io/api/apps/v1"
-	"net/http"
-	"k8s.io/client-go/kubernetes"
 	"github.com/golang/glog"
+	"k8s.io/api/apps/v1"
+	"k8s.io/client-go/kubernetes"
+	"net/http"
 )
 
 const slackUrl = "https://hooks.slack.com/services/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"

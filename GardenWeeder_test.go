@@ -1,10 +1,10 @@
 package main
 
 import (
-	"testing"
-	"k8s.io/client-go/kubernetes/fake"
 	v13 "k8s.io/api/apps/v1"
 	v12 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/client-go/kubernetes/fake"
+	"testing"
 )
 
 func TestAnnotationsIsNotDoneWhenStatusIsNotBad(t *testing.T) {

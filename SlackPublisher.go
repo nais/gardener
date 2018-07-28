@@ -56,7 +56,7 @@ type Poster interface {
 }
 
 func (c *Client) SimpleToChannel(msg string, channel string) error {
-	return c.Send(&Message{Text: msg, Channel:channel})
+	return c.Send(&Message{Text: msg, Channel: channel})
 }
 
 // Simple text message.
