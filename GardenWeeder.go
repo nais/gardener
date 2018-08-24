@@ -22,15 +22,16 @@ func NotifyTeamsOfWeed(send func(string, string) error, client kubernetes.Interf
 	if status == "bad" && notify == "" {
 		message := "The application " + deployment.Namespace + "." + deployment.Name + " has restarted more the 50 times in the cluster: " + clustername + ". The deployment will be deleted"
 
-		err := send(message, channel)
+		annotations[annotationNotify] = "done"
+		deployment, err := client.AppsV1().Deployments(deployment.Namespace).Update(deployment)
+		if err != nil {
+			glog.Errorf("Error while updating deployment %s %s", deployment.Name, err)
+			return
+		}
+		err = send(message, channel)
 		if err != nil {
 			glog.Errorf("Error when posting to slack %s ", err)
 			return
-		}
-		annotations[annotationNotify] = "done"
-		deployment, err = client.AppsV1().Deployments(deployment.Namespace).Update(deployment)
-		if err != nil {
-			glog.Errorf("Error while updating deployment %s %s", deployment.Name, err)
 		}
 
 	}
