@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-const slackUrl = "https://hooks.slack.com/services/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"
+const slackUrl = "removed"
 const channel = "nais_gardener"
 
 var httpClient = &http.Client{}
