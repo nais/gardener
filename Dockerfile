@@ -1,4 +1,4 @@
-FROM alpine:3.5
+FROM alpine:3.8
 MAINTAINER Audun Strand <audun.fauchald.strand@nav.no>
 
 RUN apk add --no-cache ca-certificates && update-ca-certificates
