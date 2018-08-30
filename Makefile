@@ -1,9 +1,9 @@
 SHELL   := bash
 NAME    := navikt/gardener
 LATEST  := ${NAME}:latest
-DEP_IMG := navikt/dep:1.0.0
+DEP_IMG := navikt/dep:3.0.0
 DEP     := docker run --rm -v ${PWD}:/go/src/github.com/nais/naisd -w /go/src/github.com/nais/naisd ${DEP_IMG} dep
-GO_IMG  := golang:1.10
+GO_IMG  := golang:1.11.0
 GO      := docker run --rm -v ${PWD}:/go/src/github.com/nais/gardener -w /go/src/github.com/nais/gardener ${GO_IMG} go
 LDFLAGS := -X github.com/nais/gardener/version.Revision=$(shell git rev-parse --short HEAD) -X github.com/nais/gardener/version.Version=$(shell /bin/cat ./vrs)
 
