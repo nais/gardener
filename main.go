@@ -26,6 +26,7 @@ func main() {
 
 	kubeconfig := flag.String("kubeconfig", "", "Path to a kubeconfig file")
 	clusterName := flag.String("clustername", "kubernetes", "Name of the kubernetes cluster")
+	slackUrl := flag.String("slackUrl", "error", "Url to slack webhook")
 	flag.Parse()
 
 	glog.Infof("running on port %s in cluster %s", Port, *clusterName)
@@ -33,7 +34,7 @@ func main() {
 
 	sharedInformers := informers.NewSharedInformerFactory(clientSet, 10*time.Minute)
 
-	gardener := NewNaisGardener(clientSet, sharedInformers.Core().V1().Pods(), sharedInformers.Apps().V1().Deployments(), *clusterName)
+	gardener := NewNaisGardener(clientSet, sharedInformers.Core().V1().Pods(), sharedInformers.Apps().V1().Deployments(), *clusterName, *slackUrl)
 
 	sharedInformers.Start(stop)
 	gardener.Run(stop)

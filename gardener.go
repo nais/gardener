@@ -26,12 +26,14 @@ type gardener struct {
 
 	queue       workqueue.RateLimitingInterface
 	clustername string
+	slackUrl    string
 }
 
 func NewNaisGardener(client *kubernetes.Clientset,
 	podInformer informercorev1.PodInformer,
 	deploymentInformer informerappsv1.DeploymentInformer,
-	clusterName string) *gardener {
+	clusterName string,
+	slackUrl string) *gardener {
 
 	gardener := &gardener{
 		podLister:              podInformer.Lister(),
@@ -39,6 +41,7 @@ func NewNaisGardener(client *kubernetes.Clientset,
 		deploymentLister:       deploymentInformer.Lister(),
 		deploymentListerSynced: deploymentInformer.Informer().HasSynced,
 		clustername:            clusterName,
+		slackUrl:               slackUrl,
 	}
 
 	podInformer.Informer().AddEventHandler(
@@ -50,7 +53,7 @@ func NewNaisGardener(client *kubernetes.Clientset,
 	)
 	deploymentInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
 		UpdateFunc: func(oldDeployment, newDeployment interface{}) {
-			NotifyTeamsOfWeed(SendMessage, client, clusterName, newDeployment.(*v12.Deployment))
+			NotifyTeamsOfWeed(SendMessage, client, clusterName, slackUrl, newDeployment.(*v12.Deployment))
 		},
 	})
 	return gardener
