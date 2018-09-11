@@ -27,9 +27,12 @@ func main() {
 	kubeconfig := flag.String("kubeconfig", "", "Path to a kubeconfig file")
 	clusterName := flag.String("clustername", "kubernetes", "Name of the kubernetes cluster")
 	slackUrl := flag.String("slackUrl", "error", "Url to slack webhook")
+
 	flag.Parse()
 
 	glog.Infof("running on port %s in cluster %s", Port, *clusterName)
+	glog.Infof("using slackUrl %s", *slackUrl)
+
 	clientSet := newClientSet(*kubeconfig)
 
 	sharedInformers := informers.NewSharedInformerFactory(clientSet, 10*time.Minute)

@@ -7,4 +7,4 @@ WORKDIR /app
 
 COPY gardener .
 
-CMD /app/gardener  --logtostderr=true --clustername=$clustername
+CMD /app/gardener  --logtostderr=true --clustername=$clustername --slackUrl=$slackUrl
