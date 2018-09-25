@@ -32,6 +32,8 @@ spec:
         env:
           - name: clustername
             value: "{{ .Values.clustername }}"
+          - name: slackUrl
+            value: "{{ .Values.slackUrl }}"
           - name: https_proxy
             value: "{{ .Values.httpsProxy }}"
           - name: http_proxy

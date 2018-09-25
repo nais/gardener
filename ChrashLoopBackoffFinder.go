@@ -28,11 +28,10 @@ func FindPodsInCrashloopBackoff(client kubernetes.Interface, pod *v1.Pod) {
 					annotations := deployment.GetAnnotations()
 					annotations[annotationStatus] = "bad"
 
-					_, err2 := client.AppsV1().Deployments(pod.Namespace).Update(deployment)
+					_, err2 := client.AppsV1().Deployments(deployment.Namespace).Update(deployment)
 					if err2 != nil {
-						glog.Errorf("cannot update deployment %s.%s: %s", pod.Namespace, deployment.Name, err2)
+						glog.Errorf("cannot update deployment %s.%s: %s", deployment.Namespace, deployment.Name, err2)
 					}
-
 				}
 			}
 		}

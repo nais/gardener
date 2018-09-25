@@ -2,6 +2,7 @@ repository: navikt/gardener
 minReplicas: 1
 maxReplicas: 1
 clustername: minikube
+slackUrl: error
 request:
   memory: 64Mi
   cpu: 250m
